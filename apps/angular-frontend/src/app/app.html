@@ -1,0 +1,13 @@
+<main class="app-container">
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <nav class="navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/users" routerLinkActive="active">Users</a>
+    </nav>
+  </header>
+  
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</main>

@@ -1,0 +1,58 @@
+<div class="user-list-container">
+  <div class="header">
+    <h2>Liste des utilisateurs</h2>
+    <button 
+      class="btn btn-primary" 
+      (click)="toggleForm()"
+      type="button">
+      {{ showForm() ? 'Annuler' : 'Ajouter un utilisateur' }}
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <div class="form-container">
+      <app-user-form (userCreated)="onUserCreated($event)"></app-user-form>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading">
+      <p>Chargement des utilisateurs...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      <p>{{ error() }}</p>
+      <button class="btn btn-secondary" (click)="loadUsers()" type="button">
+        Réessayer
+      </button>
+    </div>
+  }
+
+  @if (!loading() && !error() && users().length === 0) {
+    <div class="empty-state">
+      <p>Aucun utilisateur trouvé.</p>
+      <button class="btn btn-primary" (click)="toggleForm()" type="button">
+        Créer le premier utilisateur
+      </button>
+    </div>
+  }
+
+  @if (!loading() && !error() && users().length > 0) {
+    <div class="users-grid">
+      @for (user of users(); track user.id) {
+        <div class="user-card">
+          <div class="user-info">
+            <h3>{{ user.name }}</h3>
+            <p class="email">{{ user.email }}</p>
+            <p class="date">Créé le: {{ user.created_at | date:'short' }}</p>
+          </div>
+          <div class="user-id">
+            <span class="id-badge">ID: {{ user.id }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

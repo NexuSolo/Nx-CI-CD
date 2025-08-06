@@ -1,96 +1,176 @@
-# 
+# Application Nx Angular + NestJS avec gRPC
+
+Cette application démontre une architecture moderne avec :
+- **Frontend Angular** avec SSR, standalone components, et signaux
+- **Backend NestJS** avec support gRPC et HTTP
+- **Communication gRPC** entre microservices
+- **Gestion moderne de l'état** avec les signaux Angular
+
+## 🏗️ Architecture
+
+```
+Nx-CI-CD/
+├── apps/
+│   ├── angular-frontend/          # Application Angular SSR
+│   │   ├── src/app/components/   # Composants standalone
+│   │   └── src/app/services/     # Services avec signaux
+│   └── nestjs-backend/           # Application NestJS
+│       ├── src/app/controllers/  # Contrôleurs HTTP et gRPC
+│       ├── src/app/services/     # Services métier
+│       └── src/app/interfaces/   # Types TypeScript
+└── proto/                        # Définitions Protocol Buffers
+```
+
+## 🚀 Fonctionnalités
+
+### Frontend Angular
+- ✅ **SSR (Server-Side Rendering)** pour de meilleures performances
+- ✅ **Standalone Components** sans modules
+- ✅ **Signaux Angular** pour la gestion d'état réactive
+- ✅ **Pas de Zone.js** pour une approche moderne
+- ✅ **Séparation des fichiers** HTML, SCSS, TS
+- ✅ **Lazy Loading** des composants
+- ✅ **Forms réactifs** avec validation
+
+### Backend NestJS
+- ✅ **Application Hybride** HTTP + gRPC
+- ✅ **Microservice gRPC** sur le port 5000
+- ✅ **API HTTP REST** sur le port 3000
+- ✅ **Protocol Buffers** pour la définition des services
+- ✅ **Controllers séparés** pour HTTP et gRPC
+- ✅ **Services métier** réutilisables
+
+### Communication gRPC
+- ✅ **Service UserService** avec 3 opérations :
+  - `GetUser` : Récupérer un utilisateur par ID
+  - `CreateUser` : Créer un nouvel utilisateur
+  - `GetUsers` : Lister les utilisateurs avec pagination
+
+## 📦 Installation et démarrage
+
+### Prérequis
+- Node.js 18+
+- pnpm
+
+### Installation
+```bash
+cd Nx-CI-CD
+pnpm install
+```
+
+### Démarrage
+```bash
+# Terminal 1 - Backend NestJS (HTTP + gRPC)
+pnpm nx serve nestjs-backend
+
+# Terminal 2 - Frontend Angular avec SSR
+pnpm nx serve angular-frontend
+```
+
+### URLs
+- **Frontend Angular** : http://localhost:4200
+- **Backend HTTP API** : http://localhost:3000/api
+- **Backend gRPC** : localhost:5000
+
+## 🔧 Structure des composants
+
+### Composants Angular
+1. **App Component** : Composant racine avec navigation
+2. **Home Component** : Page d'accueil avec présentation
+3. **UserList Component** : Liste des utilisateurs avec pagination
+4. **UserForm Component** : Formulaire de création d'utilisateur
+
+### Services Angular
+1. **UserService** : Communication HTTP avec le backend
+2. **GrpcUserService** : Préparé pour communication gRPC directe
+
+## 📊 Gestion d'état avec Signaux
+
+```typescript
+// Dans UserService
+users = signal<User[]>([]);
+loading = signal<boolean>(false);
+error = signal<string | null>(null);
+
+// Dans les composants
+users = signal<User[]>([]);
+showForm = signal<boolean>(false);
+
+// Utilisation dans les templates
+@if (loading()) {
+  <p>Chargement...</p>
+}
+```
+
+## 🔌 Configuration gRPC
+
+### Protocol Buffer (proto/user.proto)
+```protobuf
+service UserService {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {}
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
+  rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {}
+}
+```
+
+### NestJS gRPC Controller
+```typescript
+@Controller()
+export class UserController {
+  @GrpcMethod('UserService', 'GetUser')
+  async getUser(request: GetUserRequest): Promise<GetUserResponse> {
+    return this.userService.getUser(request);
+  }
+}
+```
+
+## 🛠️ Commandes utiles
+
+```bash
+# Générer un nouveau composant Angular
+pnpm nx generate @nx/angular:component apps/angular-frontend/src/app/components/mon-composant --standalone --style=scss
+
+# Générer un nouveau service Angular
+pnpm nx generate @nx/angular:service --project=angular-frontend --path=apps/angular-frontend/src/app/services --name=mon-service
+
+# Générer un contrôleur NestJS
+pnpm nx generate @nx/nest:controller apps/nestjs-backend/src/app/controllers/mon-controller
+
+# Build de production
+pnpm nx build angular-frontend
+pnpm nx build nestjs-backend
+```
+
+## 🏆 Bonnes pratiques implémentées
+
+1. **Separation of Concerns** : Composants, services, et interfaces séparés
+2. **Standalone Components** : Approche moderne Angular sans modules
+3. **Signaux** : Gestion d'état réactive moderne
+4. **gRPC** : Communication haute performance entre services
+5. **TypeScript strict** : Types stricts pour la robustesse
+6. **Lazy Loading** : Chargement différé des composants
+7. **SSR** : Rendu côté serveur pour les performances
+8. **Hybrid App** : Support HTTP et gRPC simultané
+
+## 🎯 Prochaines étapes
+
+- [ ] Implémenter le client gRPC-Web côté Angular
+- [ ] Ajouter l'authentification JWT
+- [ ] Implémenter la gestion d'erreurs globale
+- [ ] Ajouter des tests e2e
+- [ ] Configurer le déploiement CI/CD
+- [ ] Ajouter un système de logs centralisé
+
+## 📝 Notes techniques
+
+- L'application utilise la dernière version d'Angular (20.x) avec les signaux
+- NestJS est configuré en mode hybride (HTTP + gRPC)
+- Pas de Zone.js pour une approche moderne de la détection de changement
+- Communication actuelle via HTTP (gRPC-Web en préparation)
+- Architecture prête pour la montée en charge avec les microservices
+
+---
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Run tasks
-
-To run tasks with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-For example:
-
-```sh
-npx nx build myproject
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
-```
-
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
-
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+✨ **Nx workspace** avec Angular 20 + NestJS + gRPC ✨
