@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { User, CreateUserRequest, GetUsersResponse } from './user';
+import { User, CreateUserRequest, GetUsersResponse } from '../types/user.types';
 
 // Types pour gRPC (normalement générés automatiquement)
 interface GrpcUserClient {
